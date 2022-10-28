@@ -15,7 +15,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { Header } from "../components/Header";
-import { Sidebar } from "../components/Siderbar";
+import { Sidebar } from "../components/Sidebar";
 import { Plus, PencilSimple, Trash } from "phosphor-react";
 import { Pagination } from "../components/Pagination";
 
