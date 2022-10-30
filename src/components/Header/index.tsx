@@ -1,10 +1,18 @@
-import { Flex } from "@chakra-ui/react";
+import { useContext } from "react";
+import { Flex, Icon, IconButton, useBreakpointValue } from "@chakra-ui/react";
 import { Logo } from "./Logo";
 import { NotificationNav } from "./NotificationNav";
 import { SearchBox } from "./SearchBox";
 import { Profile } from "./Profile";
+import { List } from "phosphor-react";
+import { SidebarDrawerContext } from "../contexts/SidebarDrawerContext";
 
 export function Header() {
+  const { onOpen } = useContext(SidebarDrawerContext);
+  const isWideVersion = useBreakpointValue({
+    base: false,
+    lg: true,
+  });
   return (
     <Flex
       as="header"
@@ -18,13 +26,23 @@ export function Header() {
       borderBottomWidth={1}
       borderColor="gray.700"
     >
+      {!isWideVersion && (
+        <IconButton
+          aria-label="Abrir Navegação"
+          icon={<Icon as={List} />}
+          fontSize={24}
+          variant="unstyled"
+          mr="2"
+          onClick={onOpen}
+        />
+      )}
       <Logo />
 
-      <SearchBox />
+      {isWideVersion && <SearchBox />}
 
       <Flex align="center" ml="auto">
         <NotificationNav />
-        <Profile />
+        <Profile showProfileData={isWideVersion} />
       </Flex>
     </Flex>
   );

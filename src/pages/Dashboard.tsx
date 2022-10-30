@@ -3,7 +3,15 @@ import { Header } from "../components/Header";
 import { Sidebar } from "../components/Sidebar";
 
 import Chart from "react-apexcharts";
-import { ApexOptions } from "apexcharts";
+
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
 
 import { theme } from "../styles/theme";
 
@@ -67,18 +75,61 @@ export function Dashboard() {
 
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <Sidebar />
+        <Swiper
+          spaceBetween={0}
+          slidesPerView={1}
+          modules={[Navigation, Pagination, Scrollbar, A11y]}
+          pagination={{ clickable: true }}
+          initialSlide={0}
+        >
+          <SwiperSlide>
+            <SimpleGrid flex="1" gap="4" minChildWidth={320}>
+              <Box p={["6", "8"]} bg="gray.800" borderRadius={8} pb="4">
+                <Text>Inscritos na semana</Text>
+                <Chart
+                  type="area"
+                  height={160}
+                  options={options}
+                  series={series}
+                />
+              </Box>
 
-        <SimpleGrid flex="1" gap="4" minChildWidth={320}>
-          <Box p="8" bg="gray.800" borderRadius={8} pb="4">
-            <Text>Inscritos na semana</Text>
-            <Chart type="area" height={160} options={options} series={series} />
-          </Box>
+              <Box p={["6", "8"]} bg="gray.800" borderRadius={8} pb="4">
+                <Text>Likes na semana</Text>
+                <Chart
+                  options={options}
+                  series={series}
+                  type="area"
+                  height={160}
+                />
+              </Box>
+            </SimpleGrid>
+          </SwiperSlide>
 
-          <Box p="8" bg="gray.800" borderRadius={8} pb="4">
-            <Text>Likes na semana</Text>
-            <Chart options={options} series={series} type="area" height={160} />
-          </Box>
-        </SimpleGrid>
+          <SwiperSlide>
+            <SimpleGrid flex="1" gap="4" minChildWidth={320}>
+              <Box p={["6", "8"]} bg="gray.800" borderRadius={8} pb="4">
+                <Text>Inscritos na semana</Text>
+                <Chart
+                  type="area"
+                  height={160}
+                  options={options}
+                  series={series}
+                />
+              </Box>
+
+              <Box p={["6", "8"]} bg="gray.800" borderRadius={8} pb="4">
+                <Text>Likes na semana</Text>
+                <Chart
+                  options={options}
+                  series={series}
+                  type="area"
+                  height={160}
+                />
+              </Box>
+            </SimpleGrid>
+          </SwiperSlide>
+        </Swiper>
       </Flex>
     </Flex>
   );
