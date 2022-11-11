@@ -9,10 +9,11 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useMemo } from "react";
-import { Input } from "../Input";
+import { useMemo, useState } from "react";
+import { User, UserForm } from "../Form/UserForm";
 
 export default function UserEdit() {
+  const [user, setUser] = useState<User>();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   console.log(isOpen);
@@ -21,19 +22,12 @@ export default function UserEdit() {
     return (
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+        <ModalContent bg="gray.800">
+          <ModalHeader>Editar Usuário</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Input />
+            <UserForm userData={user} isModal onClose={onClose} />
           </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     );
@@ -43,5 +37,7 @@ export default function UserEdit() {
     onOpen,
     onClose,
     UserEditModal,
+    setUser,
+    isOpen,
   };
 }

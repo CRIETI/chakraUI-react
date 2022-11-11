@@ -5,7 +5,6 @@ import {
   Flex,
   Heading,
   Icon,
-  Table,
   Tbody,
   Td,
   Th,
@@ -24,13 +23,37 @@ import { Pagination } from "../components/Pagination";
 import { Link } from "react-router-dom";
 
 import useUserEditModal from "../components/Modais/UserEditModal";
+import useUserDeleteModal from "../components/Modais/UserDeleteModal";
+import { Table } from "../components/Table";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { User } from "../components/Form/UserForm";
 
 export function UserList() {
-  const { onOpen, UserEditModal } = useUserEditModal();
+  const {
+    onOpen: openEditModal,
+    UserEditModal,
+    setUser: setUserEditModal,
+    isOpen: isOpenEdit,
+  } = useUserEditModal();
+  const {
+    onOpen: openDeleteModal,
+    UserDeleteModal,
+    setUser: setUserDeleteModal,
+    isOpen: isOpenDelete,
+  } = useUserDeleteModal();
+  const [users, setUsers] = useState<User[]>([]);
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true,
   });
+
+  useEffect(() => {
+    axios.get<User[]>("http://localhost:3333/users").then((response) => {
+      setUsers(response.data);
+    });
+  }, [isOpenEdit, isOpenDelete]);
+
   return (
     <Flex direction="column" h="100vh">
       <Header />
@@ -75,79 +98,89 @@ export function UserList() {
             </Link>
           </Flex>
 
-          <Table>
-            <Thead>
-              <Tr>
-                <Th px={["4", "4", "6"]} color="gray.300" w="8">
-                  <Checkbox colorScheme="blue" />
-                </Th>
-                <Th>Usuário</Th>
-                <Th>Data de Criação</Th>
-                <Th></Th>
-              </Tr>
-            </Thead>
+          <Table header={["Usuário", "Idade", "Genêro", ""]}>
             <Tbody>
-              <Tr>
-                <Td px={["4", "4", "6"]}>
-                  <Checkbox colorScheme="blue" />
-                </Td>
-                <Td>
-                  <Box>
-                    <Text fontWeight="bold">Camila Sbrussi</Text>
-                    <Text fontSize="sm" color="gray.300">
-                      camila.sbrussi@gmail.com
-                    </Text>
-                  </Box>
-                </Td>
-                <Td>27 de outubro de 2022</Td>
-                <Td>
-                  {isWideVersion ? (
-                    <HStack>
-                      <Button
-                        size="sm"
-                        fontSize="sm"
-                        colorScheme="pink"
-                        leftIcon={<Icon as={PencilSimple} fontSize={16} />}
-                        onClick={onOpen}
-                      >
-                        Editar
-                      </Button>
-                      <Button
-                        size="sm"
-                        fontSize="sm"
-                        colorScheme="red"
-                        leftIcon={<Icon as={Trash} fontSize={16} />}
-                      >
-                        Excluir
-                      </Button>
-                    </HStack>
-                  ) : (
-                    <HStack>
-                      <IconButton
-                        aria-label="Editar"
-                        icon={<Icon as={PencilSimple} fontSize={16} />}
-                        fontSize={24}
-                        colorScheme="pink"
-                        mr="2"
-                        onClick={onOpen}
-                      />
-                      <IconButton
-                        aria-label="Excluir"
-                        icon={<Icon as={Trash} fontSize={16} />}
-                        fontSize={24}
-                        colorScheme="red"
-                        mr="2"
-                      />
-                    </HStack>
-                  )}
-                </Td>
-              </Tr>
+              {users.map((user) => {
+                return (
+                  <Tr>
+                    <Td px={["4", "4", "6"]}>
+                      <Checkbox colorScheme="blue" />
+                    </Td>
+                    <Td>
+                      <Box>
+                        <Text fontWeight="bold">{user.name}</Text>
+                        <Text fontSize="sm" color="gray.300">
+                          {user.email}
+                        </Text>
+                      </Box>
+                    </Td>
+                    <Td>{user.age}</Td>
+                    <Td>{user.sex}</Td>
+                    <Td>
+                      {isWideVersion ? (
+                        <HStack>
+                          <Button
+                            size="sm"
+                            fontSize="sm"
+                            colorScheme="pink"
+                            leftIcon={<Icon as={PencilSimple} fontSize={16} />}
+                            onClick={() => {
+                              openEditModal();
+                              setUserEditModal(user);
+                            }}
+                          >
+                            Editar
+                          </Button>
+                          <Button
+                            size="sm"
+                            fontSize="sm"
+                            colorScheme="red"
+                            leftIcon={<Icon as={Trash} fontSize={16} />}
+                            onClick={() => {
+                              openDeleteModal();
+                              setUserDeleteModal(user);
+                            }}
+                          >
+                            Excluir
+                          </Button>
+                        </HStack>
+                      ) : (
+                        <HStack>
+                          <IconButton
+                            aria-label="Editar"
+                            icon={<Icon as={PencilSimple} fontSize={16} />}
+                            fontSize={24}
+                            colorScheme="pink"
+                            mr="2"
+                            onClick={() => {
+                              openEditModal();
+                              setUserEditModal(user);
+                            }}
+                          />
+                          <IconButton
+                            aria-label="Excluir"
+                            icon={<Icon as={Trash} fontSize={16} />}
+                            fontSize={24}
+                            colorScheme="red"
+                            mr="2"
+                            onClick={() => {
+                              openDeleteModal();
+                              setUserDeleteModal(user);
+                            }}
+                          />
+                        </HStack>
+                      )}
+                    </Td>
+                  </Tr>
+                );
+              })}
             </Tbody>
           </Table>
           <Pagination />
         </Box>
       </Flex>
       {UserEditModal}
+      {UserDeleteModal}
     </Flex>
   );
 }
